@@ -43,7 +43,7 @@ public class CamelliaRedisProxyProperties {
     private boolean clusterModeEnable = Constants.Server.clusterModeEnable;
 
     /**
-     * cluster模式下的cport
+     * cluster模式下的cport(当proxy启用cluster模式，cport会当作proxy的通信端口)
      */
     private int cport = -1;
 
