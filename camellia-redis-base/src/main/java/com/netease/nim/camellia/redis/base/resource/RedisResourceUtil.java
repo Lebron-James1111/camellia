@@ -25,6 +25,7 @@ public class RedisResourceUtil {
     };
 
     public static void checkResourceTable(ResourceTable resourceTable) {
+        //先校验url
         boolean check = CheckUtil.checkResourceTable(resourceTable);
         if (!check) {
             throw new IllegalArgumentException("resourceTable check fail");
@@ -42,7 +43,7 @@ public class RedisResourceUtil {
             if (url == null) {
                 throw new CamelliaRedisException("url is null");
             }
-            if (url.startsWith(RedisType.Redis.getPrefix())) {
+            if (url.startsWith(RedisType.Redis.getPrefix())) {  //redis://password@127.0.0.1:6379
                 String substring = url.substring(RedisType.Redis.getPrefix().length());
 
                 if (!substring.contains("@")) {

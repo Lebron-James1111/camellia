@@ -38,16 +38,16 @@ public class CamelliaRedisProxyServer {
 
     public void start() throws Exception {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
-        serverBootstrap.group(GlobalRedisProxyEnv.getBossGroup(), GlobalRedisProxyEnv.getWorkGroup())
-                .channel(GlobalRedisProxyEnv.getServerChannelClass())
-                .option(ChannelOption.SO_BACKLOG, serverProperties.getSoBacklog())
+        serverBootstrap.group(GlobalRedisProxyEnv.getBossGroup(), GlobalRedisProxyEnv.getWorkGroup())  //定义工作组
+                .channel(GlobalRedisProxyEnv.getServerChannelClass())                                  //设置通道
+                .option(ChannelOption.SO_BACKLOG, serverProperties.getSoBacklog())                     //设置参数
                 .childOption(ChannelOption.SO_SNDBUF, serverProperties.getSoSndbuf())
                 .childOption(ChannelOption.SO_RCVBUF, serverProperties.getSoRcvbuf())
                 .childOption(ChannelOption.TCP_NODELAY, serverProperties.isTcpNoDelay())
                 .childOption(ChannelOption.SO_KEEPALIVE, serverProperties.isSoKeepalive())
                 .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK,
                         new WriteBufferWaterMark(serverProperties.getWriteBufferWaterMarkLow(), serverProperties.getWriteBufferWaterMarkHigh()))
-                .childHandler(new ChannelInitializer<SocketChannel>() {
+                .childHandler(new ChannelInitializer<SocketChannel>() {                                //添加handler，管道中的处理器，通过ChannelInitializer来构造
                     @Override
                     public void initChannel(SocketChannel ch) {
                         ChannelPipeline p = ch.pipeline();

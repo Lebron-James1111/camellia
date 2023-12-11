@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 /**
+ * 保存不同路由实例
  *
  * Created by caojiajun on 2019/12/12.
  */
@@ -165,8 +166,10 @@ public class UpstreamRedisClientTemplateFactory implements IUpstreamClientTempla
         if (type == null) {
             throw new IllegalArgumentException();
         }
+        //初始化环境
         initEnv();
         logger.info("CamelliaRedisProxy init, type = {}", type);
+        //赋值UpstreamRedisClientTemplate
         if (type == CamelliaTranspondProperties.Type.LOCAL) {
             initLocal();
         } else if (type == CamelliaTranspondProperties.Type.REMOTE) {
@@ -174,6 +177,8 @@ public class UpstreamRedisClientTemplateFactory implements IUpstreamClientTempla
         } else if (type == CamelliaTranspondProperties.Type.CUSTOM) {
             initCustom();
         }
+
+        //预热到每个redis的连接
         if (properties.getRedisConf().isPreheat()) {
             if (localInstance != null) {
                 localInstance.preheat();
@@ -310,6 +315,7 @@ public class UpstreamRedisClientTemplateFactory implements IUpstreamClientTempla
 
         UpstreamRedisClientFactory clientFactory = new UpstreamRedisClientFactory.Default(redisConf.getRedisClusterMaxAttempts());
 
+        //初始化RedisConnectionHub
         RedisConnectionHub.getInstance().init(properties);
 
         ProxyEnv.Builder builder = new ProxyEnv.Builder();
@@ -322,6 +328,7 @@ public class UpstreamRedisClientTemplateFactory implements IUpstreamClientTempla
 
         logger.info("multi write mode = {}", redisConf.getMultiWriteMode());
 
+        //设置GlobalRedisProxyEnv的proxy发现工厂
         GlobalRedisProxyEnv.setDiscoveryFactory(ConfigInitUtil.initProxyDiscoveryFactory(redisConf, proxyBeanFactory));
 
         ProxyEnv proxyEnv = builder.build();

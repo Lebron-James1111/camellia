@@ -89,6 +89,7 @@ public class RedisClusterClient implements IUpstreamClient {
         } catch (Exception e) {
             throw new CamelliaRedisException("RedisClusterSlotInfo init fail", e);
         }
+        //定时更新该redis集群槽位信息
         startSchedule();
         logger.info("RedisClusterClient init success, resource = {}", redisClusterResource.getUrl());
     }

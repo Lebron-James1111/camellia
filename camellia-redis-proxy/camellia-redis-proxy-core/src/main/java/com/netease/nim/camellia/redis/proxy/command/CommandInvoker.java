@@ -31,9 +31,11 @@ public class CommandInvoker implements ICommandInvoker {
     private final CommandInvokeConfig commandInvokeConfig;
 
     public CommandInvoker(CamelliaServerProperties serverProperties, CamelliaTranspondProperties transpondProperties) {
+        //默认初始化FileBasedProxyDynamicConfLoader，并初始化读取指定配置内容，后台开启定时任务读取配置内容
         ProxyDynamicConfLoader dynamicConfLoader = ConfigInitUtil.initProxyDynamicConfLoader(serverProperties);
         ProxyDynamicConf.init(serverProperties.getConfig(), dynamicConfLoader);
 
+        //赋值GlobalRedisProxyEnv中的IUpstreamClientTemplateFactory（该工厂负责保存不同路由实例）
         this.factory = ConfigInitUtil.initUpstreamClientTemplateFactory(serverProperties, transpondProperties);
         GlobalRedisProxyEnv.setClientTemplateFactory(factory);
 

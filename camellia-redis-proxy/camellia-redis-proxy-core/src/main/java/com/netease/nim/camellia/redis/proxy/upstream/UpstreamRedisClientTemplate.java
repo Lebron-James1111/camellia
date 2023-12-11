@@ -634,7 +634,7 @@ public class UpstreamRedisClientTemplate implements IUpstreamRedisClientTemplate
             oldWriteResources = this.resourceSelector.getWriteResources(Utils.EMPTY_ARRAY);
         }
         RedisResourceUtil.checkResourceTable(resourceTable);
-        //初始化每个Resource，会做基本的校验
+        //初始化每个Resource，会做基本的校验，然后把所有可能的资源都保存到map
         Set<Resource> resources = ResourceUtil.getAllResources(resourceTable);
         for (Resource resource : resources) {
             factory.get(resource.getUrl());
@@ -654,6 +654,7 @@ public class UpstreamRedisClientTemplate implements IUpstreamRedisClientTemplate
             }
         }
         //check need force close subscribe channel
+        //检查是否需要强制关闭订阅通道
         boolean needCloseSubscribeChannel = this.resourceSelector.getResourceTable().getType() == ResourceTable.Type.SHADING;
         if (!needCloseSubscribeChannel) {
             List<Resource> newWriteResources = this.resourceSelector.getWriteResources(Utils.EMPTY_ARRAY);
@@ -1173,6 +1174,7 @@ public class UpstreamRedisClientTemplate implements IUpstreamRedisClientTemplate
                                 bid, bgroup, ReadableResourceTableUtil.readableResourceTable(PasswordMaskUtils.maskResourceTable(response.getResourceTable())), e);
                         return;
                     }
+                    //更新指定bid，bgroup下的路由信息
                     template.update(response.getResourceTable());
                     this.md5 = response.getMd5();
                     if (logger.isInfoEnabled()) {

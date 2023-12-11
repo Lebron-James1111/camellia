@@ -41,6 +41,7 @@ public class ResourceSelector {
     }
 
     public ResourceSelector(ResourceTable resourceTable, ProxyEnv proxyEnv, ResourceSelector.ResourceChecker resourceChecker) {
+        //拷贝resourceTable
         this.resourceTable = ResourceTableUtil.immutableResourceTable(resourceTable);
         this.proxyEnv = proxyEnv;
         this.resourceChecker = resourceChecker;

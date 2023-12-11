@@ -28,6 +28,8 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * 用于管理后段到redis的连接，如空闲连接的回收等
+ * 为了提升性能RedisConnectionHub会优先使用上行和下行是同一个work线程的RedisConnection
  *
  * Created by caojiajun on 2019/12/18.
  */
@@ -348,6 +350,9 @@ public class RedisConnectionHub {
         return connection;
     }
 
+    /**
+     * 如果failBanMillis/failCountThreshold发生变化则进行重设
+     */
     private void reloadConf() {
         long failBanMillis = ProxyDynamicConf.getLong("redis.connection.fail.ban.millis", fastFailStats.getFailBanMillis());
         if (failBanMillis != fastFailStats.getFailBanMillis()) {

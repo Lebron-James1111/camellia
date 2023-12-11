@@ -371,8 +371,10 @@ public class RedisClusterSlotInfo {
     private boolean tryRenew(String host, int port, String userName, String password) {
         RedisConnection connection = null;
         try {
+            //获取redis连接
             connection = RedisConnectionHub.getInstance().newConnection(host, port, userName, password);
             if (connection == null || !connection.isValid()) return false;
+            //执行cluster slots命令，获取redis集群槽分配信息并更新
             CompletableFuture<Reply> future = connection.sendCommand(RedisCommand.CLUSTER.raw(), Utils.stringToBytes("slots"));
             logger.info("tryRenew, connection = {}, url = {}", connection.getConnectionName(), maskUrl);
             Reply reply = future.get(10000, TimeUnit.MILLISECONDS);

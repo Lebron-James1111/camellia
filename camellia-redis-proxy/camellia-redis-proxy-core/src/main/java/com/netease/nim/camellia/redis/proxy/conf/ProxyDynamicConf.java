@@ -33,7 +33,7 @@ public class ProxyDynamicConf {
 
 
     /**
-     * 初始化ProxyDynamicConf
+     * 初始化ProxyDynamicConf（将camellia-redis-proxy.properties文件中的配置读取到conf）
      *
      * @param initConf 初始配置，来自yml文件
      * @param loader   loader

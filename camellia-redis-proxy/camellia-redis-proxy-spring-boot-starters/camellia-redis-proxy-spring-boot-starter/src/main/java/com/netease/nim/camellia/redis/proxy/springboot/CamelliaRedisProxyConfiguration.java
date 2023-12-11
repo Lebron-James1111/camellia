@@ -52,8 +52,10 @@ public class CamelliaRedisProxyConfiguration implements ApplicationContextAware 
     @Bean
     public CamelliaRedisProxyBoot redisProxyBoot(CamelliaRedisProxyProperties properties) throws Exception {
         CamelliaServerProperties serverProperties = camelliaServerProperties(properties);
+        //赋值GlobalRedisProxyEnv中的参数
         GlobalRedisProxyEnv.init(serverProperties);
 
+        //解析camellia-redis-proxy下的参数到CamelliaTranspondProperties
         CamelliaTranspondProperties transpondProperties = new CamelliaTranspondProperties();
         TranspondProperties transpond = properties.getTranspond();
 
@@ -66,6 +68,7 @@ public class CamelliaRedisProxyConfiguration implements ApplicationContextAware 
 
         CommandInvoker commandInvoker = new CommandInvoker(serverProperties, transpondProperties);
 
+        //初始化netty参数到GlobalRedisProxyEnv
         GlobalRedisProxyEnv.init(serverProperties);
         return new CamelliaRedisProxyBoot(serverProperties, commandInvoker);
     }

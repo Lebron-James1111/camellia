@@ -73,10 +73,13 @@ public class ProxyEnv {
     }
 
     private void initExec() {
+        //批量操作的并发线程池
         shardingConcurrentExec = new ThreadPoolExecutor(shardingConcurrentExecPoolSize, shardingConcurrentExecPoolSize, 0, TimeUnit.SECONDS,
                 new SynchronousQueue<>(), new CamelliaThreadFactory(ShardingCallback.class), shardingConcurrentExecRejectedExecutionHandler);
+        //多写操作（多线程并发）的线程池
         multiWriteConcurrentExec = new ThreadPoolExecutor(multiWriteConcurrentExecPoolSize, multiWriteConcurrentExecPoolSize, 0, TimeUnit.SECONDS,
                 new SynchronousQueue<>(), new CamelliaThreadFactory(OperationCallback.class), multiWriteConcurrentExecRejectedExecutionHandler);
+        //多写操作（异步）的线程池
         multiWriteAsyncExec = new CamelliaHashedExecutor("multi-write-async", multiWriteAsyncExecPoolSize, multiWriteAsyncExecQueueSize, multiWriteAsyncExecRejectedExecutionHandler);
     }
 
