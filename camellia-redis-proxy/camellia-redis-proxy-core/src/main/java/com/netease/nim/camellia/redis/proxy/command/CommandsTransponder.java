@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
+ * 鉴权，路由选择，插件上行接口
  *
  * Created by caojiajun on 2021/5/26
  */

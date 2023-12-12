@@ -504,6 +504,7 @@ public enum RedisCommand {
         ;
     }
 
+    //保存redis所有可执行命令
     private static final Map<String, RedisCommand> supportCommandMap = new HashMap<>();
     private static final Map<String, RedisCommand> commandMap = new HashMap<>();
 

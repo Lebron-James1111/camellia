@@ -92,6 +92,7 @@ public class UpstreamRedisClientTemplate implements IUpstreamRedisClientTemplate
         this.factory = env.getClientFactory();
         this.resourceChecker = env.getResourceChecker();
         this.multiWriteMode = env.getMultiWriteMode();
+        //从console拉取指定bid，bgroup的路由规则
         CamelliaApiResponse response = service.getResourceTable(bid, bgroup, null);
         String md5 = response.getMd5();
         if (response.getResourceTable() == null) {
@@ -103,6 +104,7 @@ public class UpstreamRedisClientTemplate implements IUpstreamRedisClientTemplate
             logger.info("UpstreamRedisClientTemplate init success, bid = {}, bgroup = {}, md5 = {}, resourceTable = {}", bid, bgroup, md5,
                     ReadableResourceTableUtil.readableResourceTable(PasswordMaskUtils.maskResourceTable(response.getResourceTable())));
         }
+        //定时从控制台拉取指定bid，bgroup的配置信息并更新
         if (reload) {
             DashboardReloadTask dashboardReloadTask = new DashboardReloadTask(this, service, bid, bgroup, md5);
             this.future = scheduleExecutor.scheduleAtFixedRate(dashboardReloadTask, checkIntervalMillis, checkIntervalMillis, TimeUnit.MILLISECONDS);
@@ -634,7 +636,7 @@ public class UpstreamRedisClientTemplate implements IUpstreamRedisClientTemplate
             oldWriteResources = this.resourceSelector.getWriteResources(Utils.EMPTY_ARRAY);
         }
         RedisResourceUtil.checkResourceTable(resourceTable);
-        //初始化每个Resource，会做基本的校验，然后把所有可能的资源都保存到map
+        //初始化每个Resource（生成redisClient），会做基本的校验，然后把所有可能的资源都保存到map
         Set<Resource> resources = ResourceUtil.getAllResources(resourceTable);
         for (Resource resource : resources) {
             factory.get(resource.getUrl());

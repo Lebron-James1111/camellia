@@ -23,6 +23,12 @@ public class InitHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(InitHandler.class);
 
+    /**
+     * 通道激活时调用
+     *
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
@@ -41,6 +47,13 @@ public class InitHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    /**
+     * 通道接收到新数据调用
+     *
+     * @param ctx
+     * @param msg
+     * @throws Exception
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
@@ -53,6 +66,12 @@ public class InitHandler extends ChannelInboundHandlerAdapter {
         super.channelRead(ctx, msg);
     }
 
+    /**
+     * 通道关闭时调用
+     *
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);

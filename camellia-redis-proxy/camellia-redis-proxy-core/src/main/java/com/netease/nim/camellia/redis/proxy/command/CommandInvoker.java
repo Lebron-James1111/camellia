@@ -20,6 +20,7 @@ import java.util.List;
 
 
 /**
+ * 各种配置，参数的初始化
  *
  * Created by caojiajun on 2019/12/12.
  */

@@ -13,7 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-
+/**
+ * 账号鉴权
+ * 请求监控
+ * bid/bgroup解析
+ */
 @ChannelHandler.Sharable
 public class ServerHandler extends SimpleChannelInboundHandler<List<Command>> {
 
