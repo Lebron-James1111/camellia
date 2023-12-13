@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- *
+ * 处理后端redis响应后的回调
  * Created by caojiajun on 2019/12/12.
  */
 public class CommandTaskQueue {
@@ -66,6 +66,7 @@ public class CommandTaskQueue {
                 }
                 ChannelFuture future = null;
                 do {
+                    //拿出队头元素（也就是首个任务）
                     CommandTask task = queue.peek();
                     Reply reply = task.getReply();
                     if (reply != null) {
@@ -74,6 +75,7 @@ public class CommandTaskQueue {
                                     task.getCommand() == null ? null : task.getCommand().getName(),
                                     reply.getClass().getSimpleName(), channelInfo.getConsid());
                         }
+                        //将redis执行后的结果封装为ReplyPack，返回给客户端
                         future = channelInfo.getCtx().writeAndFlush(new ReplyPack(reply, id.incrementAndGet()));
                         queue.poll();
                     } else {

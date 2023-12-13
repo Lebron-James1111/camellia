@@ -9,7 +9,7 @@ import com.netease.nim.camellia.redis.proxy.util.ErrorLogCollector;
 import java.util.List;
 
 /**
- *
+ * 接受来自后端redis响应通过CompletableFuture回调到这
  * Created by caojiajun on 2019/12/12.
  */
 public class CommandTask {
@@ -46,6 +46,7 @@ public class CommandTask {
                     }
                 }
             }
+            //先给这个任务的执行结果reply进行赋值，然后从队头取出该任务，最后封装后返回给客户端
             this.reply = reply;
             this.taskQueue.callback();
         } catch (Exception e) {

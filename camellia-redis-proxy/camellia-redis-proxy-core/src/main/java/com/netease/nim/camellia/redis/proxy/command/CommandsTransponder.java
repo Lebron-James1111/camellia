@@ -82,10 +82,11 @@ public class CommandsTransponder {
                 //设置channelInfo
                 command.setChannelInfo(channelInfo);
 
-                //任务
+                //创建命令任务并加入队列
                 CommandTask task = new CommandTask(taskQueue, command, proxyPluginInitResp.getReplyPlugins());
                 boolean add = taskQueue.add(task);
                 if (!add) {
+                    //任务加入队列失败则断连
                     taskQueue.clear();
                     logger.warn("CommandTaskQueue full, client connect will be disconnect, remote.ip = {}", ctx.channel().remoteAddress());
                     ctx.writeAndFlush(ErrorReply.TOO_BUSY).addListener((ChannelFutureListener) future -> ctx.close());
@@ -116,6 +117,7 @@ public class CommandsTransponder {
                     }
                 }
 
+                //转换成对应redis命令
                 RedisCommand redisCommand = command.getRedisCommand();
 
                 //不支持的命令直接返回NOT_SUPPORT
@@ -302,6 +304,7 @@ public class CommandsTransponder {
             }
             if (tasks.isEmpty()) return;
             if (hasCommandsSkip) {
+                //有命令需要跳过，重新设定命令集合
                 commands = new ArrayList<>(tasks.size());
                 for (CommandTask asyncTask : tasks) {
                     commands.add(asyncTask.getCommand());
@@ -352,6 +355,7 @@ public class CommandsTransponder {
     private void flush(Long bid, String bgroup, int db, List<CommandTask> tasks, List<Command> commands) {
         try {
             if (!factory.isMultiTenantsSupport() || bid == null || bid <= 0 || bgroup == null) {
+                //获取当前实例对应路由，bid/bgroup不给就取默认bid/bgroup路由
                 IUpstreamClientTemplate template = factory.getOrInitialize(bid, bgroup);
                 flush0(template, bid, bgroup, db, tasks, commands);
                 return;
@@ -381,6 +385,7 @@ public class CommandsTransponder {
             } else {
                 List<CompletableFuture<Reply>> futureList;
                 try {
+                    //向redis后端发送命令
                     futureList = template.sendCommand(db, commands);
                 } catch (Exception e) {
                     String log = "IUpstreamClientTemplate sendCommand error"
@@ -392,8 +397,10 @@ public class CommandsTransponder {
                     return;
                 }
                 for (int i = 0; i < tasks.size(); i++) {
+                    //从头到尾去任务，然后取出每个任务对应的执行结果
                     CommandTask task = tasks.get(i);
                     CompletableFuture<Reply> completableFuture = futureList.get(i);
+                    //接受来自后段命令响应并将结果通过回调方法返回给客户端
                     completableFuture.thenAccept(task::replyCompleted);
                 }
             }

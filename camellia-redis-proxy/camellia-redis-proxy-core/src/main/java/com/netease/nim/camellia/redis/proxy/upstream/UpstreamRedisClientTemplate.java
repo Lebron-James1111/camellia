@@ -569,7 +569,8 @@ public class UpstreamRedisClientTemplate implements IUpstreamRedisClientTemplate
 
             RedisCommand.Type type = redisCommand.getType();
             byte[][] args = command.getObjects();
-            if (type == RedisCommand.Type.READ) {
+            if (type == RedisCommand.Type.READ) {           //读命令
+                //获取要读取的redis资源
                 Resource resource;
                 if (redisCommand.getCommandKeyType() == RedisCommand.CommandKeyType.SIMPLE_SINGLE && args.length >= 2) {
                     resource = resourceSelector.getReadResource(args[1]);
@@ -583,7 +584,8 @@ public class UpstreamRedisClientTemplate implements IUpstreamRedisClientTemplate
                 }
                 CompletableFuture<Reply> future = doRead(resource, commandFlusher, command);
                 futureList.add(future);
-            } else if (type == RedisCommand.Type.WRITE) {
+            } else if (type == RedisCommand.Type.WRITE) {     //写命令
+                //获取要写的redis资源（数组是因为可能存在双写）
                 List<Resource> writeResources;
                 if (redisCommand.getCommandKeyType() == RedisCommand.CommandKeyType.SIMPLE_SINGLE && args.length >= 2) {
                     writeResources = resourceSelector.getWriteResources(args[1]);

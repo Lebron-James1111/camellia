@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 将响应编码后返回给客户端
+ *
  * Write a reply.
  */
 public class ReplyEncoder extends MessageToByteEncoder<Object> {

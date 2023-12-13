@@ -32,6 +32,13 @@ public class UpstreamClientCommandFlusher {
         return db;
     }
 
+    /**
+     * 修改客户端与执行命令映射与客户端与CompletableFuture的映射
+     *
+     * @param client
+     * @param command
+     * @param future
+     */
     public void sendCommand(IUpstreamClient client, Command command, CompletableFuture<Reply> future) {
         List<Command> commands = commandMap.get(client);
         if (commands == null) {

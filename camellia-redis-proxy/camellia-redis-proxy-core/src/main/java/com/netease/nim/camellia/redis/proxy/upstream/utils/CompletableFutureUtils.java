@@ -20,7 +20,10 @@ public class CompletableFutureUtils {
         for (int i=0; i<futuresList.size(); i++) {
             futures[i] = futuresList.get(i);
         }
+
+        //所有futures都返回结果后继续执行thenApply中的逻辑
         CompletableFuture<Void> allFuturesResult = CompletableFuture.allOf(futures);
+        //将每一个CompletableFuture执行结果合并成List返回
         return allFuturesResult.thenApply(v ->
                 futuresList.stream().
                         map(CompletableFuture::join).
